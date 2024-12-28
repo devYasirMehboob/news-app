@@ -7,6 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const myStyle = {
     overflow: 'hidden'
 };
+
 const News = (props) => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -33,8 +34,8 @@ const News = (props) => {
     }
     const fetchMoreData = async () => {
         const { pageSize, category, apiKey } = props;
-        const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}&page=${page+1}&pageSize=${pageSize}`;
-        setPage(page+1);
+        const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}&page=${page + 1}&pageSize=${pageSize}`;
+        setPage(page + 1);
         const response = await fetch(url);
         const data = await response.json();
         setArticles(articles.concat(data.articles));
@@ -43,7 +44,6 @@ const News = (props) => {
 
     useEffect(() => {
         updateNews();
-        // eslint-disable-next-line
         if (props.apiKey) {
             updateNews();
         } else {
@@ -55,12 +55,12 @@ const News = (props) => {
             <h2 className='text-center mt-5 mb-4 pt-5'>News Umbrella - Top {capitalize(props.category)} HeadLines</h2>
             {loading && <Loading />}
             <InfiniteScroll style={myStyle}
-                dataLength={articles.length}
+                dataLength={articles ? articles?.length : 0}
                 next={fetchMoreData}
-                hasMore={articles.length !== totalResults}
+                hasMore={articles?.length !== totalResults}
                 loader={<Loading />}>
                 <div className='row'>
-                    {articles.map((element) => (
+                    {articles?.map((element) => (
                         <div className='col-md-4 my-2' key={element.url}>
                             <NewsItem
                                 title={element.title ? element.title.slice(0, 40) : ''}
@@ -80,6 +80,7 @@ News.defaultProps = {
     pageSize: 5,
     category: 'sports'
 }
+
 News.propTypes = {
     category: PropTypes.string,
     country: PropTypes.string,
